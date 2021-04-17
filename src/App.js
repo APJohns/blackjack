@@ -2,6 +2,7 @@ import React from 'react';
 import './App.scss';
 
 import Card from './components/Card';
+import PlayingCard from './components/PlayingCard';
 
 class App extends React.Component {
   state = {
@@ -12,7 +13,8 @@ class App extends React.Component {
     totalValue: 0,
     dealerHand: [],
     dealerValue: 0,
-    playerName: 'Ash'
+    playerName: 'Ash',
+    turn: ''
   }
 
   getValue = cards => {
@@ -75,7 +77,8 @@ class App extends React.Component {
     }
     this.setState({
       dealerHand,
-      dealerValue
+      dealerValue,
+      turn: 'dealer'
     }, this.getEndState);
   }
 
@@ -97,11 +100,17 @@ class App extends React.Component {
           <h2>Dealer's Hand</h2>
           <dl>
             <dt>Value</dt>
-            <dd>{this.state.dealerValue}</dd>
+            {this.state.turn !== 'dealer' && this.state.dealerHand.length >= 2 ? (
+              <dd>{this.state.dealerValue - this.state.dealerHand[1].value}</dd>
+            ) : (
+              <dd>{this.state.dealerValue}</dd>
+            )}
           </dl>
           <ul className="cards-container">
           {this.state.dealerHand.map((card, i) => (
-            <li key={`dealerCard${i}`} className="card">{card.name} of {card.suit}</li>
+            <li key={`dealerCard${i}`}>
+              <PlayingCard name={card.name} suit={card.suit} hidden={i === 1 && this.state.turn !== 'dealer'} />
+            </li>
             ))}
           </ul>
           </section>
@@ -135,7 +144,9 @@ class App extends React.Component {
                 </dl>
                 <ul className="cards-container">
                 {this.state.currentHand.map((card, i) => (
-                  <li key={`card${i}`} className="card">{card.name} of {card.suit}</li>
+                  <li key={`card${i}`}>
+                    <PlayingCard name={card.name} suit={card.suit} />
+                  </li>
                   ))}
                 </ul>
               </>
