@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 
 import Card from './components/Card';
 
@@ -11,7 +11,8 @@ class App extends React.Component {
     currentHand: [],
     totalValue: 0,
     dealerHand: [],
-    dealerValue: 0
+    dealerValue: 0,
+    playerName: 'Ash'
   }
 
   getValue = cards => {
@@ -89,50 +90,72 @@ class App extends React.Component {
 
   render() {
     return (
-      <main>
-        <h1>Blackjack</h1>
-        {this.state.mode === 'betting' && (
-        <form className="bet-actions" onSubmit={this.submitBet}>
-          <label>Bet
-            <input type="number" value={this.state.currentBet} onChange={this.handleBet} />
-          </label>
-          <button type="submit">Bet</button>
-        </form>
-        )}
-        {this.state.mode === 'playing' && (
-        <div className="play-actions">
-          <button type="button" onClick={this.dealCard}>Hit</button>
-          <button type="button" onClick={this.dealersTurn}>Stand</button>
+      <main className="main">
+        <div className="main-panel">
+          <section className="section-dealer">
+          <h1>Blackjack</h1>
+          <h2>Dealer's Hand</h2>
+          <dl>
+            <dt>Value</dt>
+            <dd>{this.state.dealerValue}</dd>
+          </dl>
+          <ul className="cards-container">
+          {this.state.dealerHand.map((card, i) => (
+            <li key={`dealerCard${i}`} className="card">{card.name} of {card.suit}</li>
+            ))}
+          </ul>
+          </section>
+          <section className="section-result d-flex align-items-center">
+            {this.state.mode === 'bust' && <p>Bust!</p>}
+            {this.state.mode === 'win' && <p>You Win!</p>}
+            {this.state.mode === 'push' && <p>Push!</p>}
+            {this.state.mode === 'blackjack' && <p>Blackjack!</p>}
+          </section>
+          <section className="section-player">
+            <h2 className="mb-3">{ this.state.playerName }</h2>
+            {this.state.mode === 'betting' && (
+            <form className="bet-actions mb-5" onSubmit={this.submitBet}>
+              <label><span className="visually-hidden">Bet</span>
+                <input type="number" value={this.state.currentBet} onChange={this.handleBet} />
+              </label>
+              <button type="submit">Place Bet</button>
+            </form>
+            )}
+            {this.state.mode === 'playing' && (
+              <div className="play-actions">
+                <button type="button" onClick={this.dealCard}>Hit</button>
+                <button type="button" onClick={this.dealersTurn}>Stand</button>
+              </div>
+            )}
+            {this.state.mode !== 'betting' && (
+              <>
+                <dl>
+                  <dt>Value</dt>
+                  <dd>{this.state.totalValue}</dd>
+                </dl>
+                <ul className="cards-container">
+                {this.state.currentHand.map((card, i) => (
+                  <li key={`card${i}`} className="card">{card.name} of {card.suit}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+            <dl className="d-flex justify-content-evenly">
+              <div>
+                <dt>Current Bet</dt>
+                <dd>{this.state.currentBet}</dd>
+              </div>
+              <div>
+                <dt>Wallet</dt>
+                <dd>{this.state.wallet}</dd>
+              </div>
+            </dl>
+          </section>
         </div>
-        )}
-        {this.state.mode === 'bust' && <p>Bust!</p>}
-        {this.state.mode === 'win' && <p>You Win!</p>}
-        {this.state.mode === 'push' && <p>Push!</p>}
-        {this.state.mode === 'blackjack' && <p>Blackjack!</p>}
-        <h2>Dealer's Hand</h2>
-        <dl>
-          <dt>Value</dt>
-          <dd>{this.state.dealerValue}</dd>
-        </dl>
-        <ul>
-        {this.state.dealerHand.map((card, i) => (
-          <li key={`dealerCard${i}`}>{card.name} of {card.suit}</li>
-          ))}
-        </ul>
-        <h2>Your Hand</h2>
-        <dl>
-          <dt>Wallet</dt>
-          <dd>{this.state.wallet}</dd>
-          <dt>Current Bet</dt>
-          <dd>{this.state.currentBet}</dd>
-          <dt>Value</dt>
-          <dd>{this.state.totalValue}</dd>
-        </dl>
-        <ul>
-        {this.state.currentHand.map((card, i) => (
-          <li key={`card${i}`}>{card.name} of {card.suit}</li>
-        ))}
-        </ul>
+        <aside className="players-panel">
+          <h2>Other Players</h2>
+          <p>Coming soon...</p>
+        </aside>
       </main>
     );
   }
